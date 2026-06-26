@@ -1,3 +1,21 @@
+/**
+ * ------------------------------------------------------------
+ * Nebula NOC
+ * Component: DeviceTypeChip
+ * Module: Inventory
+ *
+ * Responsibility:
+ * Standardized device type badge.
+ *
+ * This component wraps the shared Badge component so the rest
+ * of the application doesn't need to know how device types
+ * are rendered.
+ *
+ * Dependencies:
+ * - Badge
+ * ------------------------------------------------------------
+ */
+
 import {
   Router,
   Wifi,
@@ -12,133 +30,103 @@ import {
   Box,
 } from "lucide-react";
 
+import { Badge } from "@/components/ui";
+
 const DEVICE_TYPES = {
   gateway: {
     label: "Gateway",
     icon: Router,
-    color: "text-cyan-300",
-    bg: "bg-cyan-500/10",
-    border: "border-cyan-500/20",
+    variant: "primary",
   },
 
   router: {
     label: "Router",
     icon: Router,
-    color: "text-cyan-300",
-    bg: "bg-cyan-500/10",
-    border: "border-cyan-500/20",
+    variant: "primary",
   },
 
   switch: {
     label: "Switch",
     icon: Network,
-    color: "text-indigo-300",
-    bg: "bg-indigo-500/10",
-    border: "border-indigo-500/20",
+    variant: "purple",
   },
 
   accesspoint: {
     label: "Access Point",
     icon: Wifi,
-    color: "text-sky-300",
-    bg: "bg-sky-500/10",
-    border: "border-sky-500/20",
+    variant: "info",
   },
 
   ap: {
     label: "Access Point",
     icon: Wifi,
-    color: "text-sky-300",
-    bg: "bg-sky-500/10",
-    border: "border-sky-500/20",
+    variant: "info",
   },
 
   firewall: {
     label: "Firewall",
     icon: Shield,
-    color: "text-red-300",
-    bg: "bg-red-500/10",
-    border: "border-red-500/20",
+    variant: "danger",
   },
 
   camera: {
     label: "Camera",
     icon: Camera,
-    color: "text-emerald-300",
-    bg: "bg-emerald-500/10",
-    border: "border-emerald-500/20",
+    variant: "success",
   },
 
   nvr: {
     label: "NVR",
     icon: HardDrive,
-    color: "text-amber-300",
-    bg: "bg-amber-500/10",
-    border: "border-amber-500/20",
+    variant: "warning",
   },
 
   dvr: {
     label: "DVR",
     icon: HardDrive,
-    color: "text-orange-300",
-    bg: "bg-orange-500/10",
-    border: "border-orange-500/20",
+    variant: "warning",
   },
 
   server: {
     label: "Server",
     icon: Server,
-    color: "text-violet-300",
-    bg: "bg-violet-500/10",
-    border: "border-violet-500/20",
+    variant: "purple",
   },
 
   workstation: {
     label: "Workstation",
     icon: MonitorSmartphone,
-    color: "text-blue-300",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
+    variant: "info",
   },
 
   computer: {
     label: "Computer",
     icon: MonitorSmartphone,
-    color: "text-blue-300",
-    bg: "bg-blue-500/10",
-    border: "border-blue-500/20",
+    variant: "info",
   },
 
   nas: {
     label: "NAS",
     icon: HardDrive,
-    color: "text-yellow-300",
-    bg: "bg-yellow-500/10",
-    border: "border-yellow-500/20",
+    variant: "warning",
   },
 
   cable: {
     label: "Cable",
     icon: Cable,
-    color: "text-slate-300",
-    bg: "bg-slate-500/10",
-    border: "border-slate-500/20",
+    variant: "default",
   },
 
   controller: {
     label: "Controller",
     icon: Cpu,
-    color: "text-fuchsia-300",
-    bg: "bg-fuchsia-500/10",
-    border: "border-fuchsia-500/20",
+    variant: "primary",
   },
 
   default: {
     label: "Device",
     icon: Box,
-    color: "text-slate-300",
-    bg: "bg-slate-500/10",
-    border: "border-slate-500/20",
+    variant: "default",
   },
 };
 
@@ -151,34 +139,17 @@ export default function DeviceTypeChip({
   className = "",
 }) {
   const config =
-    DEVICE_TYPES[normalize(type)] ?? DEVICE_TYPES.default;
-
-  const Icon = config.icon;
+    DEVICE_TYPES[normalize(type)] ??
+    DEVICE_TYPES.default;
 
   return (
-    <span
-      className={`
-        inline-flex
-        items-center
-        gap-2
-        rounded-full
-        border
-        px-3
-        py-1.5
-        text-xs
-        font-medium
-        tracking-wide
-        whitespace-nowrap
-        transition-colors
-        ${config.bg}
-        ${config.border}
-        ${config.color}
-        ${className}
-      `}
+    <Badge
+      icon={config.icon}
+      variant={config.variant}
+      size="sm"
+      className={className}
     >
-      <Icon className="h-3.5 w-3.5 shrink-0" />
-
       {config.label}
-    </span>
+    </Badge>
   );
 }

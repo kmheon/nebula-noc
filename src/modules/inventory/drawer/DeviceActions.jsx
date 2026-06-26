@@ -1,12 +1,41 @@
+/**
+ * ------------------------------------------------------------
+ * Nebula NOC
+ * Component: DeviceActions
+ * Module: Inventory
+ *
+ * Responsibility:
+ * Displays all available actions for the selected device.
+ *
+ * Features:
+ * - Locate Device
+ * - Open Web UI
+ * - SSH
+ * - Restart
+ * - Edit
+ * - Delete
+ *
+ * Dependencies:
+ * - Card
+ * - CardHeader
+ * - Button
+ * ------------------------------------------------------------
+ */
+
 import {
-  Globe,
+  Edit3,
+  ExternalLink,
   LocateFixed,
-  Pencil,
+  Monitor,
   Power,
-  RefreshCw,
-  Terminal,
   Trash2,
 } from "lucide-react";
+
+import {
+  Button,
+  Card,
+  CardHeader,
+} from "@/components/ui";
 
 export default function DeviceActions({
   device,
@@ -20,139 +49,68 @@ export default function DeviceActions({
   if (!device) return null;
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-      {/* Header */}
-      <div className="border-b border-white/10 px-6 py-4">
-        <h3 className="text-lg font-semibold text-white">
-          Actions
-        </h3>
+    <Card noPadding>
+      <CardHeader
+        title="Actions"
+        description="Manage this device"
+        icon={Monitor}
+      />
 
-        <p className="mt-1 text-sm text-slate-400">
-          Execute common management actions for this device.
-        </p>
-      </div>
-
-      <div className="grid gap-4 p-6 md:grid-cols-2 xl:grid-cols-3">
-        <ActionButton
-          icon={LocateFixed}
-          title="Locate Device"
-          description="Blink LEDs or identify the device."
+      <div className="grid gap-4 p-6 sm:grid-cols-2 xl:grid-cols-3">
+        <Button
+          variant="secondary"
+          leftIcon={LocateFixed}
           onClick={() => onLocate?.(device)}
-        />
+          className="justify-start"
+        >
+          Locate Device
+        </Button>
 
-        <ActionButton
-          icon={RefreshCw}
-          title="Refresh"
-          description="Reload the latest device information."
-          onClick={() => window.location.reload()}
-        />
-
-        <ActionButton
-          icon={Power}
-          title="Restart"
-          description="Reboot the device safely."
-          onClick={() => onRestart?.(device)}
-        />
-
-        <ActionButton
-          icon={Terminal}
-          title="SSH"
-          description="Open an SSH session."
-          onClick={() => onSSH?.(device)}
-        />
-
-        <ActionButton
-          icon={Globe}
-          title="Open Web UI"
-          description="Launch the device web interface."
+        <Button
+          variant="secondary"
+          leftIcon={ExternalLink}
           onClick={() => onOpenWeb?.(device)}
-        />
+          className="justify-start"
+        >
+          Open Web UI
+        </Button>
 
-        <ActionButton
-          icon={Pencil}
-          title="Edit"
-          description="Modify device information."
+        <Button
+          variant="secondary"
+          leftIcon={Monitor}
+          onClick={() => onSSH?.(device)}
+          className="justify-start"
+        >
+          SSH Session
+        </Button>
+
+        <Button
+          variant="warning"
+          leftIcon={Power}
+          onClick={() => onRestart?.(device)}
+          className="justify-start"
+        >
+          Restart Device
+        </Button>
+
+        <Button
+          variant="primary"
+          leftIcon={Edit3}
           onClick={() => onEdit?.(device)}
-        />
+          className="justify-start"
+        >
+          Edit Device
+        </Button>
+
+        <Button
+          variant="danger"
+          leftIcon={Trash2}
+          onClick={() => onDelete?.(device)}
+          className="justify-start"
+        >
+          Delete Device
+        </Button>
       </div>
-
-      <div className="border-t border-red-500/10 bg-red-500/[0.03] p-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h4 className="font-semibold text-red-300">
-              Danger Zone
-            </h4>
-
-            <p className="mt-1 text-sm text-slate-400">
-              Permanently remove this device from Nebula.
-              This action cannot be undone.
-            </p>
-          </div>
-
-          <button
-            onClick={() => onDelete?.(device)}
-            className="
-              inline-flex
-              items-center
-              gap-2
-              rounded-xl
-              border
-              border-red-500/20
-              bg-red-500/10
-              px-5
-              py-3
-              text-sm
-              font-medium
-              text-red-300
-              transition
-              hover:bg-red-500/20
-              hover:text-red-200
-            "
-          >
-            <Trash2 className="h-4 w-4" />
-
-            Delete Device
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ActionButton({
-  icon: Icon,
-  title,
-  description,
-  onClick,
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="
-        group
-        rounded-2xl
-        border
-        border-white/10
-        bg-white/5
-        p-5
-        text-left
-        transition-all
-        duration-200
-        hover:border-cyan-500/20
-        hover:bg-cyan-500/5
-      "
-    >
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-colors group-hover:border-cyan-500/20 group-hover:bg-cyan-500/10">
-        <Icon className="h-5 w-5 text-cyan-400" />
-      </div>
-
-      <h4 className="font-semibold text-white">
-        {title}
-      </h4>
-
-      <p className="mt-2 text-sm leading-6 text-slate-400">
-        {description}
-      </p>
-    </button>
+    </Card>
   );
 }

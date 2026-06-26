@@ -1,5 +1,33 @@
-import DeviceHealth from "./DeviceHealth";
+/**
+ * ------------------------------------------------------------
+ * Nebula NOC
+ * Component: DeviceRow
+ * Module: Inventory
+ *
+ * Responsibility:
+ * Renders a single device row within the inventory table.
+ *
+ * Features:
+ * - Device selection
+ * - Device identity
+ * - Vendor & model
+ * - Device type
+ * - Health status
+ * - Row click navigation
+ *
+ * Dependencies:
+ * - DeviceTypeChip
+ * - Badge
+ * - StatusDot
+ * ------------------------------------------------------------
+ */
+
 import DeviceTypeChip from "./DeviceTypeChip";
+
+import {
+  Badge,
+  StatusDot,
+} from "@/components/ui";
 
 export default function DeviceRow({
   device,
@@ -20,9 +48,20 @@ export default function DeviceRow({
     lastSeen,
   } = device;
 
-  const handleRowClick = (e) => {
-    // Don't trigger row click when clicking the checkbox
-    if (e.target.closest("input")) return;
+  /**
+   * Normalize device status so every shared UI component
+   * receives a predictable value regardless of backend casing.
+   */
+  const normalizedStatus =
+    (status || "unknown").toLowerCase();
+
+  /**
+   * Prevent row navigation when the checkbox is clicked.
+   */
+  const handleRowClick = (event) => {
+    if (event.target.closest("input")) {
+      return;
+    }
 
     onClick?.(device);
   };
@@ -38,10 +77,13 @@ export default function DeviceRow({
         transition-colors
         duration-150
         hover:bg-white/[0.035]
-        ${selected ? "bg-cyan-500/8" : ""}
+        ${selected ? "bg-cyan-500/10" : ""}
       `}
     >
-      {/* Select */}
+      {/* ------------------------------------------------ */}
+      {/* Selection                                        */}
+      {/* ------------------------------------------------ */}
+
       <td className="px-5 py-4">
         <input
           type="checkbox"
@@ -59,7 +101,10 @@ export default function DeviceRow({
         />
       </td>
 
-      {/* Device Identity */}
+      {/* ------------------------------------------------ */}
+      {/* Device Identity                                  */}
+      {/* ------------------------------------------------ */}
+
       <td className="px-5 py-4">
         <div className="flex flex-col">
           <span className="font-medium text-white transition-colors group-hover:text-cyan-300">
@@ -73,6 +118,7 @@ export default function DeviceRow({
       </td>
 
       {/* Vendor */}
+
       <td className="px-5 py-4">
         <span className="text-slate-200">
           {vendor || "—"}
@@ -80,6 +126,7 @@ export default function DeviceRow({
       </td>
 
       {/* Model */}
+
       <td className="px-5 py-4">
         <span className="font-medium text-slate-300">
           {model || "—"}
@@ -87,11 +134,13 @@ export default function DeviceRow({
       </td>
 
       {/* Device Type */}
+
       <td className="px-5 py-4">
         <DeviceTypeChip type={type} />
       </td>
 
       {/* MAC */}
+
       <td className="px-5 py-4">
         <span className="font-mono text-sm text-slate-400">
           {mac || "—"}
@@ -99,6 +148,7 @@ export default function DeviceRow({
       </td>
 
       {/* Site */}
+
       <td className="px-5 py-4">
         <span className="text-slate-300">
           {site || "Default"}
@@ -106,12 +156,35 @@ export default function DeviceRow({
       </td>
 
       {/* Health */}
+
       <td className="px-5 py-4">
-        <DeviceHealth
-          status={status}
-          lastSeen={lastSeen}
-          compact
-        />
+        <div className="flex items-center gap-2">
+          <StatusDot
+            status={normalizedStatus}
+            compact
+          />
+
+          <Badge
+            size="sm"
+            variant={
+              normalizedStatus === "online"
+                ? "success"
+                : normalizedStatus === "warning"
+                ? "warning"
+                : normalizedStatus === "offline"
+                ? "danger"
+                : "default"
+            }
+          >
+            {status || "Unknown"}
+          </Badge>
+
+          {lastSeen && (
+            <span className="text-xs text-slate-500">
+              {lastSeen}
+            </span>
+          )}
+        </div>
       </td>
     </tr>
   );

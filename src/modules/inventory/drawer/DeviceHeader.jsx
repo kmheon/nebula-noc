@@ -1,3 +1,28 @@
+/**
+ * ------------------------------------------------------------
+ * Nebula NOC
+ * Component: DeviceHeader
+ * Module: Inventory
+ *
+ * Responsibility:
+ * Displays the identity of the selected device.
+ *
+ * Features:
+ * - Device identity
+ * - Vendor & model
+ * - Device type
+ * - Health indicator
+ * - Basic inventory information
+ *
+ * Dependencies:
+ * - Card
+ * - CardHeader
+ * - Badge
+ * - StatusDot
+ * - DeviceTypeChip
+ * ------------------------------------------------------------
+ */
+
 import {
   Building2,
   Cpu,
@@ -7,7 +32,13 @@ import {
   Router,
 } from "lucide-react";
 
-import DeviceHealth from "../components/DeviceHealth";
+import {
+  Badge,
+  Card,
+  CardHeader,
+  StatusDot,
+} from "@/components/ui";
+
 import DeviceTypeChip from "../components/DeviceTypeChip";
 
 export default function DeviceHeader({ device }) {
@@ -23,90 +54,87 @@ export default function DeviceHeader({ device }) {
     mac,
     serial,
     status,
-    lastSeen,
   } = device;
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-      {/* Top */}
-      <div className="border-b border-white/10 p-6">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          {/* Identity */}
-          <div className="flex gap-5">
-            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10">
-              <Router className="h-8 w-8 text-cyan-400" />
-            </div>
+    <Card noPadding>
+      <CardHeader
+        title={name}
+        description="Device Identity"
+        icon={Router}
+        actions={<StatusDot status={status} compact />}
+      />
 
-            <div>
-              <h1 className="text-2xl font-semibold text-white">
-                {name}
-              </h1>
+      {/* ------------------------------------------------ */}
+      {/* Identity                                         */}
+      {/* ------------------------------------------------ */}
 
-              <div className="mt-2 flex flex-wrap items-center gap-2">
-                <DeviceTypeChip type={type} />
+      <div className="space-y-6 p-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <DeviceTypeChip type={type} />
 
-                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-slate-300">
-                  {vendor}
-                </span>
+          <Badge variant="default">
+            {vendor}
+          </Badge>
 
-                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-slate-300">
-                  {model}
-                </span>
-              </div>
-            </div>
-          </div>
+          <Badge variant="default">
+            {model}
+          </Badge>
+        </div>
 
-          {/* Health */}
-          <DeviceHealth
-            status={status}
-            lastSeen={lastSeen}
+        {/* ------------------------------------------------ */}
+        {/* Information Grid                                */}
+        {/* ------------------------------------------------ */}
+
+        <div className="grid gap-px overflow-hidden rounded-xl bg-white/5 md:grid-cols-2 xl:grid-cols-3">
+          <InfoItem
+            icon={Building2}
+            label="Vendor"
+            value={vendor}
+          />
+
+          <InfoItem
+            icon={Cpu}
+            label="Model"
+            value={model}
+          />
+
+          <InfoItem
+            icon={MapPin}
+            label="Site"
+            value={site}
+          />
+
+          <InfoItem
+            icon={Globe}
+            label="IP Address"
+            value={ip}
+          />
+
+          <InfoItem
+            icon={Hash}
+            label="MAC Address"
+            value={mac}
+            mono
+          />
+
+          <InfoItem
+            icon={Hash}
+            label="Serial Number"
+            value={serial || "Not Available"}
+            mono
           />
         </div>
       </div>
-
-      {/* Information Grid */}
-      <div className="grid gap-px bg-white/5 md:grid-cols-2 xl:grid-cols-4">
-        <InfoItem
-          icon={Building2}
-          label="Vendor"
-          value={vendor}
-        />
-
-        <InfoItem
-          icon={Cpu}
-          label="Model"
-          value={model}
-        />
-
-        <InfoItem
-          icon={MapPin}
-          label="Site"
-          value={site}
-        />
-
-        <InfoItem
-          icon={Globe}
-          label="IP Address"
-          value={ip}
-        />
-
-        <InfoItem
-          icon={Hash}
-          label="MAC Address"
-          value={mac}
-          mono
-        />
-
-        <InfoItem
-          icon={Hash}
-          label="Serial Number"
-          value={serial || "Not Available"}
-          mono
-        />
-      </div>
-    </section>
+    </Card>
   );
 }
+
+/**
+ * ------------------------------------------------------------
+ * Information Item
+ * ------------------------------------------------------------
+ */
 
 function InfoItem({
   icon: Icon,
@@ -125,11 +153,9 @@ function InfoItem({
       </div>
 
       <p
-        className={`
-          text-sm
-          text-white
-          ${mono ? "font-mono" : "font-medium"}
-        `}
+        className={`text-sm text-white ${
+          mono ? "font-mono" : "font-medium"
+        }`}
       >
         {value || "—"}
       </p>
