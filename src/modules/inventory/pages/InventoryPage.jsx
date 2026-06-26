@@ -1,228 +1,160 @@
-import { useState } from "react";
-import {
-  Router,
-  Network,
-  Wifi,
-  HardDrive,
-  Server,
-  CircleCheckBig,
-  CircleAlert,
-  CircleX,
-} from "lucide-react";
+import { useMemo, useState } from "react";
 
-import Button from "@/components/ui/Button/Button";
-import Card from "@/components/ui/Card/Card";
-import PageHeader from "@/components/ui/PageHeader/PageHeader";
+import InventoryToolbar from "../components/InventoryToolbar";
+import DeviceTable from "../components/DeviceTable";
 
-import { discoverDevices } from "@/services/discovery/deviceDiscovery";
+const mockDevices = [
+  {
+    id: 1,
+    name: "Core Gateway",
+    vendor: "Ubiquiti",
+    model: "UXG-Pro",
+    type: "Gateway",
+    ip: "192.168.1.1",
+    mac: "18:E8:29:11:AB:01",
+    site: "Head Office",
+    status: "online",
+    lastSeen: "Just now",
+  },
+  {
+    id: 2,
+    name: "Distribution Switch",
+    vendor: "Cisco",
+    model: "CBS350-24P",
+    type: "Switch",
+    ip: "192.168.1.10",
+    mac: "18:E8:29:11:AB:02",
+    site: "Head Office",
+    status: "online",
+    lastSeen: "Just now",
+  },
+  {
+    id: 3,
+    name: "Lobby Access Point",
+    vendor: "Ubiquiti",
+    model: "U7 Pro",
+    type: "Access Point",
+    ip: "192.168.1.21",
+    mac: "18:E8:29:11:AB:03",
+    site: "Head Office",
+    status: "warning",
+    lastSeen: "3 min ago",
+  },
+  {
+    id: 4,
+    name: "Warehouse Camera",
+    vendor: "Hikvision",
+    model: "DS-2CD2387G2",
+    type: "Camera",
+    ip: "192.168.10.51",
+    mac: "18:E8:29:11:AB:04",
+    site: "Warehouse",
+    status: "offline",
+    lastSeen: "27 min ago",
+  },
+  {
+    id: 5,
+    name: "Recording Server",
+    vendor: "Dell",
+    model: "PowerEdge R550",
+    type: "Server",
+    ip: "192.168.5.10",
+    mac: "18:E8:29:11:AB:05",
+    site: "Server Room",
+    status: "updating",
+    lastSeen: "Updating...",
+  },
+];
 
-const deviceIcons = {
-  Router,
-  Switch: Network,
-  "Access Point": Wifi,
-  NAS: HardDrive,
-  Server,
-};
-
-export default function Devices() {
-  const [devices, setDevices] = useState([]);
+export default function InventoryPage() {
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [selectedDevices, setSelectedDevices] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  async function handleScan() {
-    setLoading(true);
-    const result = await discoverDevices();
-    setDevices(result);
-    setLoading(false);
-  }
+  const filteredDevices = useMemo(() => {
+    return mockDevices.filter((device) => {
+      const matchesSearch =
+        [
+          device.name,
+          device.vendor,
+          device.model,
+          device.type,
+          device.ip,
+          device.mac,
+          device.site,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(search.toLowerCase());
 
-  function StatusIcon(status) {
-    switch (status) {
-      case "Online":
-        return (
-          <CircleCheckBig
-            size={18}
-            className="text-green-400"
-          />
-        );
+      const matchesFilter =
+        filter === "all" || device.status === filter;
 
-      case "Warning":
-        return (
-          <CircleAlert
-            size={18}
-            className="text-yellow-400"
-          />
-        );
+      return matchesSearch && matchesFilter;
+    });
+  }, [search, filter]);
 
-      default:
-        return (
-          <CircleX
-            size={18}
-            className="text-red-500"
-          />
-        );
+  const handleSelectDevice = (id) => {
+    setSelectedDevices((current) =>
+      current.includes(id)
+        ? current.filter((deviceId) => deviceId !== id)
+        : [...current, id]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedDevices.length === filteredDevices.length) {
+      setSelectedDevices([]);
+      return;
     }
-  }
+
+    setSelectedDevices(filteredDevices.map((d) => d.id));
+  };
+
+  const handleRefresh = async () => {
+    setLoading(true);
+
+    // Placeholder for API refresh
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    setLoading(false);
+  };
+
+  const handleExport = () => {
+    console.log("Export inventory");
+  };
+
+  const handleAddDevice = () => {
+    console.log("Add device");
+  };
+
+  const handleRowClick = (device) => {
+    console.log("Open device", device);
+  };
 
   return (
-    <div className="space-y-8 p-8">
-
-      <PageHeader
-        title="Network Inventory"
-        subtitle="Discover and manage every device on your network."
-        actions={
-          <Button onClick={handleScan}>
-            {loading ? "Scanning..." : "Scan Network"}
-          </Button>
-        }
+    <div className="space-y-6">
+      <InventoryToolbar
+        search={search}
+        onSearchChange={setSearch}
+        filter={filter}
+        onFilterChange={setFilter}
+        totalDevices={filteredDevices.length}
+        selectedCount={selectedDevices.length}
+        loading={loading}
+        onRefresh={handleRefresh}
+        onExport={handleExport}
+        onAddDevice={handleAddDevice}
       />
 
-      <Card>
-
-        <div className="overflow-x-auto">
-
-          <table className="w-full">
-
-            <thead className="border-b border-cyan-500/20 text-left text-sm text-gray-400">
-
-              <tr>
-                <th className="pb-4">Device</th>
-                <th className="pb-4">IP Address</th>
-                <th className="pb-4">MAC Address</th>
-                <th className="pb-4">Health</th>
-              </tr>
-
-            </thead>
-
-            <tbody>
-
-              {devices.length === 0 ? (
-
-                <tr>
-
-                  <td
-                    colSpan={4}
-                    className="py-14 text-center text-gray-500"
-                  >
-                    Press <strong>Scan Network</strong> to discover devices.
-                  </td>
-
-                </tr>
-
-              ) : (
-
-                devices.map((device) => {
-
-                  const Icon =
-                    deviceIcons[device.type] || Server;
-
-                  return (
-
-                    <tr
-                      key={device.id}
-                      className="border-b border-cyan-500/10 transition hover:bg-cyan-500/5"
-                    >
-
-                      <td className="py-5">
-
-                        <div className="flex items-center gap-4">
-
-                          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/10">
-
-                            <Icon
-                              size={22}
-                              className="text-cyan-400"
-                            />
-
-                          </div>
-
-                          <div>
-
-                            <div className="flex items-center gap-2">
-
-                              <div
-                                className={`h-2.5 w-2.5 rounded-full ${
-                                  device.status === "Online"
-                                    ? "bg-green-400 animate-pulse"
-                                    : device.status === "Warning"
-                                    ? "bg-yellow-400 animate-pulse"
-                                    : "bg-red-500"
-                                }`}
-                              />
-
-                              <p className="font-semibold">
-                                {device.hostname}
-                              </p>
-
-                            </div>
-
-                            <div className="mt-1 flex gap-2 text-xs">
-
-                              <span className="rounded-full bg-cyan-500/10 px-2 py-1 text-cyan-300">
-                                {device.type}
-                              </span>
-
-                              <span className="rounded-full bg-white/5 px-2 py-1 text-gray-400">
-                                {device.vendor}
-                              </span>
-
-                              <span className="rounded-full bg-white/5 px-2 py-1 text-gray-400">
-                                {device.model}
-                              </span>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                      </td>
-
-                      <td className="font-mono text-gray-300">
-                        {device.ip}
-                      </td>
-
-                      <td className="font-mono text-gray-500">
-                        {device.mac}
-                      </td>
-
-                      <td>
-
-                        <div className="flex items-center gap-2">
-
-                          {StatusIcon(device.status)}
-
-                          <span
-                            className={
-                              device.status === "Online"
-                                ? "text-green-400"
-                                : device.status === "Warning"
-                                ? "text-yellow-400"
-                                : "text-red-500"
-                            }
-                          >
-                            {device.status}
-                          </span>
-
-                        </div>
-
-                      </td>
-
-                    </tr>
-
-                  );
-
-                })
-
-              )}
-
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </Card>
-
+      <DeviceTable
+        devices={filteredDevices}
+        selectedDevices={selectedDevices}
+        onSelectDevice={handleSelectDevice}
+        onSelectAll={handleSelectAll}
+        onRowClick={handleRowClick}
+      />
     </div>
   );
 }
