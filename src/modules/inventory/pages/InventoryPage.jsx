@@ -10,11 +10,11 @@ import {
   CircleX,
 } from "lucide-react";
 
-import Button from "../../../components/ui/Button/Button";
-import Card from "../../../components/ui/Card/Card";
-import PageHeader from "../../../components/ui/PageHeader/PageHeader";
+import Button from "@/components/ui/Button/Button";
+import Card from "@/components/ui/Card/Card";
+import PageHeader from "@/components/ui/PageHeader/PageHeader";
 
-import { discoverDevices } from "../../../services/discovery/deviceDiscovery";
+import { discoverDevices } from "@/services/discovery/deviceDiscovery";
 
 const deviceIcons = {
   Router,
