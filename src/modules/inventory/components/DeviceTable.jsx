@@ -6,13 +6,6 @@
  *
  * Responsibility:
  * Displays the inventory device list.
- *
- * Features:
- * - Premium enterprise table
- * - Responsive layout
- * - Shared Card component
- * - Shared EmptyState component
- * - Reusable DeviceRow rendering
  * ------------------------------------------------------------
  */
 
@@ -25,54 +18,79 @@ import {
 
 export default function DeviceTable({
   devices = [],
-  selectedDevice,
+  selectedDevices = [],
   onSelectDevice,
+  onSelectAll,
 }) {
+  const allSelected =
+    devices.length > 0 &&
+    selectedDevices.length === devices.length;
+
+  const partiallySelected =
+    selectedDevices.length > 0 &&
+    !allSelected;
+
   return (
     <Card noPadding className="overflow-hidden">
       {devices.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="min-w-full border-collapse">
+          <table className="min-w-full">
             {/* ------------------------------------------------ */}
-            {/* Table Header                                     */}
+            {/* Header                                           */}
             {/* ------------------------------------------------ */}
 
             <thead className="border-b border-white/10 bg-white/[0.03]">
-              <tr className="text-left">
-                <th className="w-14 px-6 py-4" />
+              <tr className="text-left text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
 
-                <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                {/* Select All */}
+
+                <th className="w-14 px-6 py-4">
+                  <input
+                    type="checkbox"
+                    checked={allSelected}
+                    ref={(el) => {
+                      if (el) {
+                        el.indeterminate =
+                          partiallySelected;
+                      }
+                    }}
+                    onChange={onSelectAll}
+                    className="h-4 w-4 rounded border-white/20 bg-transparent text-cyan-500"
+                  />
+                </th>
+
+                <th className="px-6 py-4">
                   Device
                 </th>
 
-                <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                <th className="px-6 py-4">
                   Vendor
                 </th>
 
-                <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                <th className="px-6 py-4">
                   Model
                 </th>
 
-                <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                <th className="px-6 py-4">
                   Type
                 </th>
 
-                <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                <th className="px-6 py-4">
+                  Management IP
+                </th>
+
+                <th className="px-6 py-4">
                   MAC Address
                 </th>
 
-                <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Site
-                </th>
-
-                <th className="px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  Health
+                <th className="px-6 py-4">
+                  Status
                 </th>
               </tr>
             </thead>
 
             {/* ------------------------------------------------ */}
-            {/* Table Body                                       */}
+            {/* Body                                             */}
             {/* ------------------------------------------------ */}
 
             <tbody className="divide-y divide-white/5">
@@ -80,12 +98,8 @@ export default function DeviceTable({
                 <DeviceRow
                   key={device.id}
                   device={device}
-                  selected={
-                    selectedDevice?.id === device.id
-                  }
-                  onClick={() =>
-                    onSelectDevice?.(device)
-                  }
+                  selected={selectedDevices.includes(device.id)}
+                  onSelect={onSelectDevice}
                 />
               ))}
             </tbody>

@@ -5,25 +5,18 @@
  * Module: Inventory
  *
  * Responsibility:
- * Renders a single device row within the inventory table.
- *
- * Features:
- * - Device selection
- * - Device identity
- * - Vendor & model
- * - Device type
- * - Health status
- * - Row click navigation
- *
- * Dependencies:
- * - DeviceTypeChip
- * - StatusDot
+ * Renders a single device row.
  * ------------------------------------------------------------
  */
 
+import { MapPin } from "lucide-react";
+
 import DeviceTypeChip from "./DeviceTypeChip";
 
-import { StatusDot } from "@/components/ui";
+import {
+  Badge,
+  StatusDot,
+} from "@/components/ui";
 
 export default function DeviceRow({
   device,
@@ -47,17 +40,9 @@ export default function DeviceRow({
   const normalizedStatus =
     (status || "unknown").toLowerCase();
 
-  const handleRowClick = (event) => {
-    if (event.target.closest("input")) {
-      return;
-    }
-
-    onClick?.(device);
-  };
-
   return (
     <tr
-      onClick={handleRowClick}
+      onClick={() => onClick?.(device)}
       className={`
         group
         cursor-pointer
@@ -77,36 +62,34 @@ export default function DeviceRow({
       {/* Selection                                        */}
       {/* ------------------------------------------------ */}
 
-      <td className="px-6 py-5">
+      <td className="w-14 px-6 py-5">
         <input
           type="checkbox"
           checked={selected}
           onChange={() => onSelect?.(id)}
-          className="
-            h-4
-            w-4
-            rounded
-            border-white/20
-            bg-transparent
-            text-cyan-500
-            focus:ring-cyan-500
-          "
+          onClick={(e) => e.stopPropagation()}
+          className="h-4 w-4 rounded border-white/20 bg-transparent text-cyan-500"
         />
       </td>
 
       {/* ------------------------------------------------ */}
-      {/* Device Identity                                  */}
+      {/* Device                                           */}
       {/* ------------------------------------------------ */}
 
       <td className="px-6 py-5">
-        <div className="flex flex-col gap-0.5">
+        <div className="flex flex-col gap-2">
           <span className="font-semibold text-white transition-colors duration-200 group-hover:text-cyan-300">
             {name}
           </span>
 
-          <span className="font-mono text-xs tracking-wide text-slate-500">
-            {ip}
-          </span>
+          <Badge
+            size="sm"
+            variant="info"
+            icon={MapPin}
+            className="w-fit"
+          >
+            {site || "Default Site"}
+          </Badge>
         </div>
       </td>
 
@@ -126,13 +109,25 @@ export default function DeviceRow({
         </span>
       </td>
 
-      {/* Device Type */}
+      {/* Type */}
 
       <td className="px-6 py-5">
         <DeviceTypeChip type={type} />
       </td>
 
-      {/* MAC */}
+      {/* ------------------------------------------------ */}
+      {/* Management IP                                    */}
+      {/* ------------------------------------------------ */}
+
+      <td className="px-6 py-5">
+        <span className="font-mono text-sm text-cyan-300">
+          {ip || "—"}
+        </span>
+      </td>
+
+      {/* ------------------------------------------------ */}
+      {/* MAC Address                                      */}
+      {/* ------------------------------------------------ */}
 
       <td className="px-6 py-5">
         <span className="font-mono text-sm text-slate-400">
@@ -140,28 +135,19 @@ export default function DeviceRow({
         </span>
       </td>
 
-      {/* Site */}
-
-      <td className="px-6 py-5">
-        <span className="text-slate-300">
-          {site || "Default"}
-        </span>
-      </td>
-
-      {/* Health */}
+      {/* ------------------------------------------------ */}
+      {/* Status                                            */}
+      {/* ------------------------------------------------ */}
 
       <td className="px-6 py-5">
         <div className="flex flex-col items-start gap-1">
           <StatusDot
             status={normalizedStatus}
-            compact
           />
 
-          {lastSeen && (
-            <span className="pl-5 text-[11px] text-slate-500">
-              {lastSeen}
-            </span>
-          )}
+          <span className="pl-5 text-[11px] text-slate-500">
+            {lastSeen || "Unknown"}
+          </span>
         </div>
       </td>
     </tr>
