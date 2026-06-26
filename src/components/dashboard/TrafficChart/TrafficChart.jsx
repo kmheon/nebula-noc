@@ -1,5 +1,5 @@
 import Card from "../../ui/Card/Card";
-
+import { getTrafficData } from "../../../services/providers";
 import {
   Area,
   AreaChart,
@@ -10,20 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
-const trafficData = [
-  { time: "09:00", traffic: 35 },
-  { time: "09:05", traffic: 50 },
-  { time: "09:10", traffic: 45 },
-  { time: "09:15", traffic: 70 },
-  { time: "09:20", traffic: 82 },
-  { time: "09:25", traffic: 68 },
-  { time: "09:30", traffic: 90 },
-  { time: "09:35", traffic: 76 },
-  { time: "09:40", traffic: 55 },
-  { time: "09:45", traffic: 71 },
-  { time: "09:50", traffic: 88 },
-  { time: "09:55", traffic: 95 },
-];
+const trafficData = getTrafficData();
 
 export default function TrafficChart() {
   return (

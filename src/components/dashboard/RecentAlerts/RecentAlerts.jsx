@@ -1,32 +1,13 @@
-const alerts = [
-  {
-    level: "Critical",
-    message: "Firewall blocked repeated login attempts.",
-    time: "2 min ago",
-  },
-  {
-    level: "Warning",
-    message: "WAN bandwidth exceeded 80%.",
-    time: "6 min ago",
-  },
-  {
-    level: "Info",
-    message: "New MikroTik device discovered.",
-    time: "12 min ago",
-  },
-];
-
-const badgeColors = {
-  Critical: "bg-red-500/20 text-red-400 border-red-500/30",
-  Warning: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  Info: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-};
+import Card from "../../ui/Card/Card";
+import Badge from "../../ui/Badge/Badge";
+import { getRecentAlerts } from "../../../services/providers";
 
 export default function RecentAlerts() {
-  return (
-    <div className="rounded-2xl border border-cyan-500/20 bg-[#0B1220]/80 backdrop-blur-xl p-6">
+  const alerts = getRecentAlerts();
 
-      <h2 className="text-xl font-semibold mb-6">
+  return (
+    <Card>
+      <h2 className="mb-6 text-xl font-semibold">
         Recent Alerts
       </h2>
 
@@ -37,17 +18,21 @@ export default function RecentAlerts() {
             className="rounded-xl border border-cyan-500/10 bg-[#05070B] p-4 transition-all duration-300 hover:border-cyan-400/30"
           >
             <div className="flex items-center justify-between">
-
-              <span
-                className={`rounded-full border px-3 py-1 text-xs font-semibold ${badgeColors[alert.level]}`}
+              <Badge
+                variant={
+                  alert.level === "Critical"
+                    ? "danger"
+                    : alert.level === "Warning"
+                    ? "warning"
+                    : "info"
+                }
               >
                 {alert.level}
-              </span>
+              </Badge>
 
               <span className="text-xs text-gray-500">
                 {alert.time}
               </span>
-
             </div>
 
             <p className="mt-3 text-gray-300">
@@ -56,7 +41,6 @@ export default function RecentAlerts() {
           </div>
         ))}
       </div>
-
-    </div>
+    </Card>
   );
 }

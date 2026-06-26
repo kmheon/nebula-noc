@@ -1,75 +1,89 @@
-const devices = [
-  {
-    name: "Core Router",
-    ip: "192.168.0.1",
-    status: "Online",
-  },
-  {
-    name: "Distribution Switch",
-    ip: "192.168.0.2",
-    status: "Online",
-  },
-  {
-    name: "Access Point",
-    ip: "192.168.0.31",
-    status: "Warning",
-  },
-  {
-    name: "Office NAS",
-    ip: "192.168.0.20",
-    status: "Offline",
-  },
-];
+import Card from "../../ui/Card/Card";
+import Badge from "../../ui/Badge/Badge";
+import { getDevices } from "../../../services/providers";
 
-const statusClass = {
-  Online: "bg-green-500/20 text-green-400",
-  Warning: "bg-yellow-500/20 text-yellow-400",
-  Offline: "bg-red-500/20 text-red-400",
+const badgeVariant = {
+  Online: "success",
+  Warning: "warning",
+  Offline: "danger",
 };
 
 export default function DeviceStatus() {
+  const devices = getDevices();
+
   return (
-    <div className="rounded-2xl border border-cyan-500/20 bg-[#0B1220]/80 backdrop-blur-xl p-6">
+    <Card>
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-semibold">
+          Connected Devices
+        </h2>
 
-      <h2 className="mb-6 text-xl font-semibold">
-        Device Status
-      </h2>
+        <span className="text-sm text-gray-400">
+          {devices.length} Devices
+        </span>
+      </div>
 
-      <table className="w-full">
-        <thead className="border-b border-cyan-500/20 text-left text-gray-400">
-          <tr>
-            <th className="pb-3">Device</th>
-            <th className="pb-3">IP Address</th>
-            <th className="pb-3">Status</th>
-          </tr>
-        </thead>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[900px]">
 
-        <tbody>
-          {devices.map((device) => (
-            <tr
-              key={device.ip}
-              className="border-b border-cyan-500/10 hover:bg-cyan-500/5 transition-colors"
-            >
-              <td className="py-4 font-medium">
-                {device.name}
-              </td>
-
-              <td className="text-gray-400">
-                {device.ip}
-              </td>
-
-              <td>
-                <span
-                  className={`rounded-full px-3 py-1 text-sm font-medium ${statusClass[device.status]}`}
-                >
-                  {device.status}
-                </span>
-              </td>
+          <thead className="border-b border-cyan-500/20 text-left text-sm text-gray-400">
+            <tr>
+              <th className="pb-4">Device</th>
+              <th className="pb-4">Vendor</th>
+              <th className="pb-4">IP Address</th>
+              <th className="pb-4">Interface</th>
+              <th className="pb-4">RX</th>
+              <th className="pb-4">TX</th>
+              <th className="pb-4">Latency</th>
+              <th className="pb-4">Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
 
-    </div>
+          <tbody>
+            {devices.map((device) => (
+              <tr
+                key={device.ip}
+                className="border-b border-cyan-500/10 transition-colors hover:bg-cyan-500/5"
+              >
+                <td className="py-4 font-medium text-white">
+                  {device.name}
+                </td>
+
+                <td className="text-gray-300">
+                  {device.vendor}
+                </td>
+
+                <td className="text-gray-400">
+                  {device.ip}
+                </td>
+
+                <td className="text-cyan-300">
+                  {device.interface}
+                </td>
+
+                <td className="text-green-400">
+                  {device.rx}
+                </td>
+
+                <td className="text-blue-400">
+                  {device.tx}
+                </td>
+
+                <td className="text-gray-300">
+                  {device.latency}
+                </td>
+
+                <td>
+                  <Badge variant={badgeVariant[device.status]}>
+                    {device.status}
+                  </Badge>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
+      </div>
+    </Card>
   );
 }
