@@ -2,83 +2,124 @@
  * File: navigation.js
  * Folder: src/constants
  * Project: Nebula NOC
- * Version: 1.0.0
+ * Version: 2.0.0
  *
  * Description
  * ------------------------------------------------------------------------
- * Defines every sidebar navigation item.
+ * Defines the application's primary navigation.
  *
- * The sidebar component should render this array instead of creating
- * navigation links manually.
+ * This file is the single source of truth for every module that appears
+ * inside the sidebar.
+ *
+ * Future modules should ONLY be added here.
  *
  * Future Enhancements
  * ------------------------------------------------------------------------
- * - User permissions
- * - Nested navigation
- * - Favorites
- * - Notifications
+ * ✔ Role-based permissions
+ * ✔ Plugin modules
+ * ✔ Nested navigation
+ * ✔ Notification badges
+ * ✔ Favorites
+ * ✔ Feature flags
  **************************************************************************/
 
-/**************************************************************************
- * SECTION: NAVIGATION
- **************************************************************************/
+import {
+  Activity,
+  BarChart3,
+  FileText,
+  LayoutDashboard,
+  Monitor,
+  Network,
+  Settings,
+  Shield,
+} from "lucide-react";
 
 export const NAVIGATION = [
+  {
+    id: "dashboard",
+    title: "Dashboard",
+    path: "/",
+    icon: LayoutDashboard,
+    enabled: true,
+    badge: null,
+    category: "core",
+    description: "Network overview",
+  },
 
-    {
-        id: "dashboard",
-        label: "Dashboard",
-        icon: "LayoutDashboard",
-        route: "/"
-    },
+  {
+    id: "monitoring",
+    title: "Monitoring",
+    path: "/monitoring",
+    icon: Activity,
+    enabled: true,
+    badge: null,
+    category: "core",
+    description: "System health monitoring",
+  },
 
-    {
-        id: "monitoring",
-        label: "Monitoring",
-        icon: "Activity",
-        route: "/monitoring"
-    },
+  {
+    id: "devices",
+    title: "Devices",
+    path: "/devices",
+    icon: Monitor,
+    enabled: true,
+    badge: null,
+    category: "core",
+    description: "Connected devices",
+  },
 
-    {
-        id: "devices",
-        label: "Devices",
-        icon: "Monitor",
-        route: "/devices"
-    },
+  {
+    id: "network",
+    title: "Network",
+    path: "/network",
+    icon: Network,
+    enabled: true,
+    badge: null,
+    category: "core",
+    description: "Infrastructure management",
+  },
 
-    {
-        id: "network",
-        label: "Network",
-        icon: "Network",
-        route: "/network"
-    },
+  {
+    id: "security",
+    title: "Security",
+    path: "/security",
+    icon: Shield,
+    enabled: true,
+    badge: null,
+    category: "core",
+    description: "Threat detection & policies",
+  },
 
-    {
-        id: "security",
-        label: "Security",
-        icon: "Shield",
-        route: "/security"
-    },
+  {
+    id: "traffic",
+    title: "Traffic",
+    path: "/traffic",
+    icon: BarChart3,
+    enabled: true,
+    badge: null,
+    category: "analytics",
+    description: "Traffic analytics",
+  },
 
-    {
-        id: "traffic",
-        label: "Traffic",
-        icon: "BarChart3",
-        route: "/traffic"
-    },
+  {
+    id: "reports",
+    title: "Reports",
+    path: "/reports",
+    icon: FileText,
+    enabled: true,
+    badge: null,
+    category: "analytics",
+    description: "Reports & exports",
+  },
 
-    {
-        id: "reports",
-        label: "Reports",
-        icon: "FileText",
-        route: "/reports"
-    },
-
-    {
-        id: "settings",
-        label: "Settings",
-        icon: "Settings",
-        route: "/settings"
-    }
-
+  {
+    id: "settings",
+    title: "Settings",
+    path: "/settings",
+    icon: Settings,
+    enabled: true,
+    badge: null,
+    category: "system",
+    description: "Application settings",
+  },
 ];
