@@ -1,15 +1,6 @@
-/**
- * ------------------------------------------------------------
- * Nebula NOC
- * Module: Monitoring
- * Page: MonitoringPage
- *
- * Dashboard entry page.
- *
- * Phase 4.1
- * Dashboard Layout
- * ------------------------------------------------------------
- */
+import { useEffect, useState } from "react";
+
+import { monitoringStore } from "../data/monitoring.store";
 
 import DashboardHeader from "../components/DashboardHeader";
 import StatsGrid from "../components/StatsGrid";
@@ -21,55 +12,38 @@ import ActivityFeed from "../components/ActivityFeed";
 import QuickActions from "../components/QuickActions";
 
 export default function MonitoringPage() {
+  const [state, setState] = useState(() =>
+    monitoringStore.getState()
+  );
+
+  useEffect(() => {
+    const unsubscribe = monitoringStore.subscribe(setState);
+
+    monitoringStore.startSimulation();
+
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className="space-y-6">
 
-      {/* ------------------------------------------------ */}
-      {/* Dashboard Header                                */}
-      {/* ------------------------------------------------ */}
-
       <DashboardHeader />
 
-      {/* ------------------------------------------------ */}
-      {/* Statistics                                       */}
-      {/* ------------------------------------------------ */}
-
-      <StatsGrid />
-
-      {/* ------------------------------------------------ */}
-      {/* Overview Charts                                 */}
-      {/* ------------------------------------------------ */}
+      <StatsGrid data={state.stats} />
 
       <div className="grid gap-6 xl:grid-cols-2">
-
-        <HealthOverview />
-
-        <DeviceDistribution />
-
+        <HealthOverview data={state} />
+        <DeviceDistribution data={state.devices} />
       </div>
 
-      {/* ------------------------------------------------ */}
-      {/* Monitoring                                       */}
-      {/* ------------------------------------------------ */}
-
       <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
-
-        <BandwidthChart />
-
-        <AlertsPanel />
-
+        <BandwidthChart data={state.bandwidth} />
+        <AlertsPanel alerts={state.alerts} />
       </div>
 
-      {/* ------------------------------------------------ */}
-      {/* Bottom Widgets                                   */}
-      {/* ------------------------------------------------ */}
-
       <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
-
-        <ActivityFeed />
-
+        <ActivityFeed activity={state.activity} />
         <QuickActions />
-
       </div>
 
     </div>
