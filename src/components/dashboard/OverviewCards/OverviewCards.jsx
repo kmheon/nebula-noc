@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 
 import StatCard from "../../ui/StatCard/StatCard";
-import { getDashboardStats } from "../../../services/providers";
 
 const icons = {
   HardDrive,
@@ -15,9 +14,7 @@ const icons = {
   AlertTriangle,
 };
 
-export default function OverviewCards() {
-  const stats = getDashboardStats();
-
+export default function OverviewCards({ stats }) {
   return (
     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
       {stats.map((stat) => (

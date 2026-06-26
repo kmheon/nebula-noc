@@ -1,6 +1,5 @@
 import Card from "../../ui/Card/Card";
 import Badge from "../../ui/Badge/Badge";
-import { getDevices } from "../../../services/providers";
 
 const badgeVariant = {
   Online: "success",
@@ -8,9 +7,7 @@ const badgeVariant = {
   Offline: "danger",
 };
 
-export default function DeviceStatus() {
-  const devices = getDevices();
-
+export default function DeviceStatus({ devices }) {
   return (
     <Card>
       <div className="mb-6 flex items-center justify-between">
@@ -25,7 +22,6 @@ export default function DeviceStatus() {
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[900px]">
-
           <thead className="border-b border-cyan-500/20 text-left text-sm text-gray-400">
             <tr>
               <th className="pb-4">Device</th>

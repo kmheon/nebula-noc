@@ -3,28 +3,29 @@ import TrafficChart from "../components/dashboard/TrafficChart/TrafficChart";
 import RecentAlerts from "../components/dashboard/RecentAlerts/RecentAlerts";
 import DeviceStatus from "../components/dashboard/DeviceStatus/DeviceStatus";
 
+import PageHeader from "../components/ui/PageHeader/PageHeader";
+
+import useDashboardData from "../hooks/useDashboardData";
+
 export default function Dashboard() {
+  const data = useDashboardData();
+
   return (
-    <div className="p-8 space-y-8">
+    <div className="space-y-8 p-8">
 
-      <div>
-        <h1 className="text-4xl font-bold text-cyan-400">
-          Operations Overview
-        </h1>
+      <PageHeader
+        title="Operations Overview"
+        subtitle="Real-time overview of your network infrastructure."
+      />
 
-        <p className="mt-2 text-gray-400">
-          Real-time overview of your network infrastructure.
-        </p>
-      </div>
-
-      <OverviewCards />
+      <OverviewCards stats={data.stats} />
 
       <div className="grid gap-8 xl:grid-cols-2">
-        <TrafficChart />
-        <RecentAlerts />
+        <TrafficChart traffic={data.traffic} />
+        <RecentAlerts alerts={data.alerts} />
       </div>
 
-      <DeviceStatus />
+      <DeviceStatus devices={data.devices} />
 
     </div>
   );

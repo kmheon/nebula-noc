@@ -1,5 +1,5 @@
 import Card from "../../ui/Card/Card";
-import { getTrafficData } from "../../../services/providers";
+
 import {
   Area,
   AreaChart,
@@ -10,14 +10,10 @@ import {
   YAxis,
 } from "recharts";
 
-const trafficData = getTrafficData();
-
-export default function TrafficChart() {
+export default function TrafficChart({ traffic }) {
   return (
     <Card>
-
       <div className="mb-6 flex items-center justify-between">
-
         <div>
           <h2 className="text-xl font-semibold text-white">
             Live Traffic
@@ -35,15 +31,11 @@ export default function TrafficChart() {
             Live
           </span>
         </div>
-
       </div>
 
       <div className="h-72">
-
         <ResponsiveContainer width="100%" height="100%">
-
-          <AreaChart data={trafficData}>
-
+          <AreaChart data={traffic}>
             <defs>
               <linearGradient id="trafficGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#22d3ee" stopOpacity={0.8} />
@@ -51,10 +43,7 @@ export default function TrafficChart() {
               </linearGradient>
             </defs>
 
-            <CartesianGrid
-              stroke="#1e293b"
-              strokeDasharray="4 4"
-            />
+            <CartesianGrid stroke="#1e293b" strokeDasharray="4 4" />
 
             <XAxis
               dataKey="time"
@@ -86,13 +75,9 @@ export default function TrafficChart() {
               fill="url(#trafficGradient)"
               animationDuration={1200}
             />
-
           </AreaChart>
-
         </ResponsiveContainer>
-
       </div>
-
     </Card>
   );
 }

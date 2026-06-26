@@ -1,10 +1,7 @@
 import Card from "../../ui/Card/Card";
 import Badge from "../../ui/Badge/Badge";
-import { getRecentAlerts } from "../../../services/providers";
 
-export default function RecentAlerts() {
-  const alerts = getRecentAlerts();
-
+export default function RecentAlerts({ alerts }) {
   return (
     <Card>
       <h2 className="mb-6 text-xl font-semibold">
