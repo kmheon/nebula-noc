@@ -5,23 +5,13 @@
  * Module: Shared UI
  *
  * Responsibility:
- * Provides the base card container used throughout Nebula.
+ * Base surface container used throughout Nebula.
  *
  * Features:
- * - Nebula glass styling
- * - Optional hover effect
- * - Optional padding removal
- * - Optional clickable state
- * - Reusable across all modules
- *
- * Used By:
- * - Inventory
- * - Monitoring
- * - Alerts
- * - Assets
- * - Settings
- * - Device Drawer
- *
+ * - Consistent spacing
+ * - Premium glass appearance
+ * - Optional padding
+ * - Hover support
  * ------------------------------------------------------------
  */
 
@@ -30,53 +20,35 @@ import clsx from "clsx";
 export default function Card({
   children,
   className = "",
-  hover = false,
-  clickable = false,
   noPadding = false,
-  noBorder = false,
-  transparent = false,
-  as: Component = "section",
-  ...props
+  hover = false,
 }) {
   return (
-    <Component
+    <section
       className={clsx(
-        // ----------------------------------------------------
-        // Base Nebula Card
-        // ----------------------------------------------------
-        "overflow-hidden rounded-2xl",
-
-        // ----------------------------------------------------
-        // Surface
-        // ----------------------------------------------------
-        transparent
-          ? "bg-transparent"
-          : "bg-white/[0.03] backdrop-blur-xl",
-
-        // ----------------------------------------------------
-        // Border
-        // ----------------------------------------------------
-        !noBorder && "border border-white/10",
-
-        // ----------------------------------------------------
-        // Padding
-        // ----------------------------------------------------
-        !noPadding && "p-6",
-
-        // ----------------------------------------------------
-        // Interaction
-        // ----------------------------------------------------
+        `
+        overflow-hidden
+        rounded-2xl
+        border
+        border-white/10
+        bg-[#111827]/70
+        backdrop-blur-xl
+        shadow-lg
+        shadow-black/20
+        transition-all
+        duration-200
+        `,
         hover &&
-          "transition-all duration-200 hover:border-cyan-500/20 hover:bg-white/[0.045]",
-
-        clickable &&
-          "cursor-pointer transition-all duration-200 hover:border-cyan-500/20 hover:bg-white/[0.045] active:scale-[0.995]",
-
+          `
+          hover:border-cyan-500/20
+          hover:bg-[#131d2f]
+          hover:shadow-cyan-500/5
+          `,
+        !noPadding && "p-6",
         className
       )}
-      {...props}
     >
       {children}
-    </Component>
+    </section>
   );
 }

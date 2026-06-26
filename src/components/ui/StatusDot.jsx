@@ -5,155 +5,119 @@
  * Module: Shared UI
  *
  * Responsibility:
- * Displays a standardized status indicator with an optional
- * icon and label.
+ * Premium operational status indicator used throughout
+ * the Nebula platform.
  *
  * Features:
- * - Standard status colors
- * - Optional animated state
- * - Optional label
- * - Optional icon
+ * - Online
+ * - Offline
+ * - Warning
+ * - Error
+ * - Unknown
  * - Compact mode
- *
- * Used By:
- * - Inventory
- * - Monitoring
- * - Alerts
- * - Assets
- * - Device Drawer
- * - Sites
- *
- * Future Integrations:
- * - Live telemetry
- * - WebSocket updates
- * - SNMP status
- * - Alert engine
+ * - Optional label
  * ------------------------------------------------------------
  */
 
 import clsx from "clsx";
-import {
-  Activity,
-  AlertTriangle,
-  CheckCircle2,
-  Clock3,
-  HelpCircle,
-  WifiOff,
-} from "lucide-react";
 
 const STATUS = {
   online: {
-    label: "Online",
-    color: "bg-emerald-500",
-    text: "text-emerald-300",
-    border: "border-emerald-500/20",
-    bg: "bg-emerald-500/10",
-    icon: CheckCircle2,
+    color: "bg-emerald-400",
+    text: "Online",
+    pulse: true,
   },
 
   warning: {
-    label: "Warning",
-    color: "bg-amber-500",
-    text: "text-amber-300",
-    border: "border-amber-500/20",
-    bg: "bg-amber-500/10",
-    icon: AlertTriangle,
+    color: "bg-amber-400",
+    text: "Warning",
+    pulse: false,
   },
 
   offline: {
-    label: "Offline",
+    color: "bg-red-400",
+    text: "Offline",
+    pulse: false,
+  },
+
+  error: {
     color: "bg-red-500",
-    text: "text-red-300",
-    border: "border-red-500/20",
-    bg: "bg-red-500/10",
-    icon: WifiOff,
+    text: "Error",
+    pulse: false,
   },
 
-  updating: {
-    label: "Updating",
-    color: "bg-cyan-500",
-    text: "text-cyan-300",
-    border: "border-cyan-500/20",
-    bg: "bg-cyan-500/10",
-    icon: Activity,
-    animated: true,
-  },
-
-  provisioning: {
-    label: "Provisioning",
-    color: "bg-violet-500",
-    text: "text-violet-300",
-    border: "border-violet-500/20",
-    bg: "bg-violet-500/10",
-    icon: Clock3,
-    animated: true,
+  maintenance: {
+    color: "bg-blue-400",
+    text: "Maintenance",
+    pulse: false,
   },
 
   unknown: {
-    label: "Unknown",
     color: "bg-slate-500",
-    text: "text-slate-400",
-    border: "border-white/10",
-    bg: "bg-white/5",
-    icon: HelpCircle,
+    text: "Unknown",
+    pulse: false,
   },
 };
 
 export default function StatusDot({
   status = "unknown",
-  label = true,
-  icon = true,
-  pulse,
   compact = false,
+  showLabel = true,
   className = "",
 }) {
   const config =
-    STATUS[status?.toLowerCase()] ?? STATUS.unknown;
-
-  const Icon = config.icon;
-
-  const animate =
-    pulse !== undefined ? pulse : config.animated;
+    STATUS[(status || "").toLowerCase()] ??
+    STATUS.unknown;
 
   return (
     <div
       className={clsx(
-        "inline-flex items-center gap-2 border",
-        compact ? "rounded-full px-2.5 py-1" : "rounded-xl px-3 py-2",
-        config.border,
-        config.bg,
+        "inline-flex items-center gap-2",
         className
       )}
     >
-      {/* Status Dot */}
-      <span
-        className={clsx(
-          "h-2.5 w-2.5 rounded-full",
-          config.color,
-          animate && "animate-pulse"
+      {/* ------------------------------------------------ */}
+      {/* Status Indicator                                 */}
+      {/* ------------------------------------------------ */}
+
+      <span className="relative flex h-3 w-3 items-center justify-center">
+        {config.pulse && (
+          <span
+            className={clsx(
+              "absolute inline-flex h-full w-full rounded-full opacity-60",
+              config.color,
+              "animate-ping"
+            )}
+          />
         )}
-      />
 
-      {/* Status Icon */}
-      {icon && (
-        <Icon
-          className={clsx(
-            compact ? "h-3.5 w-3.5" : "h-4 w-4",
-            config.text
-          )}
-        />
-      )}
-
-      {/* Status Label */}
-      {label && (
         <span
           className={clsx(
-            compact ? "text-xs" : "text-sm",
-            "font-medium",
-            config.text
+            "relative inline-flex rounded-full",
+            compact ? "h-2.5 w-2.5" : "h-3 w-3",
+            config.color
+          )}
+        />
+      </span>
+
+      {/* ------------------------------------------------ */}
+      {/* Label                                             */}
+      {/* ------------------------------------------------ */}
+
+      {showLabel && (
+        <span
+          className={clsx(
+            "text-sm font-medium",
+            status === "online"
+              ? "text-emerald-300"
+              : status === "warning"
+              ? "text-amber-300"
+              : status === "offline" || status === "error"
+              ? "text-red-300"
+              : "text-slate-300"
           )}
         >
-          {config.label}
+          {config.text}
         </span>
       )}
     </div>

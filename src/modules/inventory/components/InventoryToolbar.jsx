@@ -8,20 +8,19 @@
  * Primary toolbar for the Inventory module.
  *
  * Features:
- * - Device search
- * - Device filters
- * - Refresh inventory
- * - Add device
- * - Shared Nebula UI components
- *
- * Dependencies:
- * - Card
- * - Button
- * - SearchInput
+ * - Search
+ * - Filters
+ * - Refresh
+ * - Add Device
+ * - Shared Nebula UI Components
  * ------------------------------------------------------------
  */
 
-import { Filter, Plus, RefreshCw } from "lucide-react";
+import {
+  Filter,
+  Plus,
+  RefreshCw,
+} from "lucide-react";
 
 import {
   Button,
@@ -38,21 +37,17 @@ export default function InventoryToolbar({
   rightContent,
 }) {
   return (
-    <Card className="mb-6">
-      {/* ------------------------------------------------ */}
-      {/* Toolbar                                          */}
-      {/* ------------------------------------------------ */}
-
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+    <Card className="mb-8">
+      <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
         {/* ------------------------------------------------ */}
         {/* Search                                           */}
         {/* ------------------------------------------------ */}
 
-        <div className="w-full max-w-xl">
+        <div className="w-full xl:max-w-2xl">
           <SearchInput
             value={search}
             onChange={onSearch}
-            placeholder="Search by device name, vendor, model, IP or serial..."
+            placeholder="Search by device name, IP, vendor, model or serial..."
           />
         </div>
 
